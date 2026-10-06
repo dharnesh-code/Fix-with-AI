@@ -31,7 +31,28 @@ class Diagnosis(BaseModel):
 class DiagnoseResponse(BaseModel):
     session_id: str
     diagnosis: Diagnosis
+    evaluator_notes: List[str] = []  # Empty = clean pass; non-empty = issues found/fixed
 
+
+# --- Async task queue models ---
+
+class DiagnoseQueued(BaseModel):
+    """Returned immediately when a diagnosis task is enqueued."""
+    task_id: str
+    status: str  # always "queued" on creation
+
+
+class TaskStatus(BaseModel):
+    """Returned when polling GET /api/task/{task_id}."""
+    task_id: str
+    status: str                          # queued | processing | done | error
+    session_id: Optional[str] = None     # set when done
+    diagnosis: Optional[Diagnosis] = None
+    evaluator_notes: List[str] = []
+    error: Optional[str] = None          # set when status = error
+
+
+# --- Chat models ---
 
 class ChatMessage(BaseModel):
     session_id: str
