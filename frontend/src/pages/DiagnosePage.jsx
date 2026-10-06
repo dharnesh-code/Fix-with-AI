@@ -150,7 +150,7 @@ export default function DiagnosePage() {
                   ))}
                 </div>
               ) : (
-                <div style={{ color: 'var(--text-muted)', fontSize: 14 }}>No resources could be fetched at this time (API quota exceeded).</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: 14 }}>?? Future Enhancement: Real-time Live Web Grounding (YouTube & Articles) will be directly integrated here.</div>
               )}
             </div>
           )}
