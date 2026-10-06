@@ -1,5 +1,8 @@
+import { useState } from "react";
+
 export default function DiagnosisCard({ diagnosis }) {
   const risk = (diagnosis.risk_level || "low").toLowerCase();
+  const [voiceLang, setVoiceLang] = useState("en-US");
 
   function speakDiagnosis() {
     if (!window.speechSynthesis) {
@@ -7,22 +10,36 @@ export default function DiagnosisCard({ diagnosis }) {
       return;
     }
 
-    const text = `
-    Problem identified: ${diagnosis.problem_identified}.
-    Category: ${diagnosis.category}.
-    Estimated repair time: ${diagnosis.estimated_time}.
-    Risk level: ${diagnosis.risk_level}.
-    ${
-      diagnosis.professional_help_required
-        ? "Professional assistance is recommended."
-        : "This repair can be performed safely as a DIY task."
+    let text = "";
+    if (voiceLang === "ta-IN") {
+      text = `
+      பிரச்சனை: ${diagnosis.problem_identified}.
+      வகை: ${diagnosis.category}.
+      மதிப்பிடப்பட்ட நேரம்: ${diagnosis.estimated_time}.
+      அபாய நிலை: ${diagnosis.risk_level}.
+      ${
+        diagnosis.professional_help_required
+          ? "நிபுணரின் உதவி பரிந்துரைக்கப்படுகிறது."
+          : "இதை நீங்களே பாதுகாப்பாக சரிசெய்யலாம்."
+      }
+      `;
+    } else {
+      text = `
+      Problem identified: ${diagnosis.problem_identified}.
+      Category: ${diagnosis.category}.
+      Estimated repair time: ${diagnosis.estimated_time}.
+      Risk level: ${diagnosis.risk_level}.
+      ${
+        diagnosis.professional_help_required
+          ? "Professional assistance is recommended."
+          : "This repair can be performed safely as a DIY task."
+      }
+      `;
     }
-    ${diagnosis.confidence_note || ""}
-    `;
 
     const speech = new SpeechSynthesisUtterance(text);
 
-    speech.lang = "en-US";
+    speech.lang = voiceLang;
     speech.rate = 1;
     speech.pitch = 1;
     speech.volume = 1;
@@ -90,20 +107,38 @@ export default function DiagnosisCard({ diagnosis }) {
           display: "flex",
           gap: "15px",
           flexWrap: "wrap",
+          alignItems: "center",
         }}
       >
+        <select
+          value={voiceLang}
+          onChange={(e) => setVoiceLang(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            background: "var(--bg-input)",
+            border: "1px solid var(--line-strong)",
+            color: "var(--text-primary)",
+            borderRadius: "var(--radius)",
+            fontSize: "14px",
+            height: "42px",
+          }}
+        >
+          <option value="en-US">English Voice</option>
+          <option value="ta-IN">தமிழ் (Tamil) Voice</option>
+        </select>
+
         <button
           className="btn-primary"
           onClick={speakDiagnosis}
         >
-          🔊 Listen to Diagnosis
+          🔊 Listen
         </button>
 
         <button
           className="btn-ghost"
           onClick={stopSpeaking}
         >
-          ⏹ Stop Voice
+          ⏹ Stop
         </button>
       </div>
     </div>

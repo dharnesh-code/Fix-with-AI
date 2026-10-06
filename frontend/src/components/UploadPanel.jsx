@@ -8,6 +8,7 @@ export default function UploadPanel({ onSubmit, error }) {
   const [preview, setPreview] = useState(null);
   const [description, setDescription] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [voiceLang, setVoiceLang] = useState("en-US");
 
   const inputRef = useRef(null);
 
@@ -29,7 +30,7 @@ export default function UploadPanel({ onSubmit, error }) {
 
     SpeechRecognition.startListening({
       continuous: true,
-      language: "en-US",
+      language: voiceLang,
     });
   }
 
@@ -142,8 +143,25 @@ export default function UploadPanel({ onSubmit, error }) {
                 display: "flex",
                 gap: "10px",
                 marginTop: "12px",
+                alignItems: "center",
               }}
             >
+              <select
+                value={voiceLang}
+                onChange={(e) => setVoiceLang(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  background: "var(--bg-input)",
+                  border: "1px solid var(--line-strong)",
+                  color: "var(--text-primary)",
+                  borderRadius: "var(--radius)",
+                  fontSize: "14px",
+                  height: "42px",
+                }}
+              >
+                <option value="en-US">English Input</option>
+                <option value="ta-IN">தமிழ் (Tamil) Input</option>
+              </select>
 
               {!listening ? (
 
