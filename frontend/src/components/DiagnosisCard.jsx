@@ -44,20 +44,21 @@ export default function DiagnosisCard({ diagnosis }) {
     speech.pitch = 1;
     speech.volume = 1;
 
-    // Explicitly try to find a matching voice (especially important for Tamil)
+    // Browsers often load voices asynchronously, so getVoices() might be empty at first.
+    // We try to grab the exact voice if it's loaded, otherwise we just trust speech.lang
     const voices = window.speechSynthesis.getVoices();
     let selectedVoice = null;
     
-    if (voiceLang === "ta-IN") {
-      selectedVoice = voices.find((v) => v.lang.includes("ta") || v.name.toLowerCase().includes("tamil"));
-    } else {
-      selectedVoice = voices.find((v) => v.lang.includes("en"));
+    if (voices.length > 0) {
+      if (voiceLang === "ta-IN") {
+        selectedVoice = voices.find((v) => v.lang.includes("ta") || v.name.toLowerCase().includes("tamil"));
+      } else {
+        selectedVoice = voices.find((v) => v.lang.includes("en"));
+      }
     }
 
     if (selectedVoice) {
       speech.voice = selectedVoice;
-    } else if (voiceLang === "ta-IN") {
-      alert("Tamil voice not found! Please ensure your browser or Windows OS has the Tamil Speech Language Pack installed.");
     }
 
     window.speechSynthesis.cancel();
